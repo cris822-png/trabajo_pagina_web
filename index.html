@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DISCIPLINA AUDIT | Dashboard</title>
+  <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+
+  <!-- HEADER CON RELOJ -->
+  <header>
+    <nav class="flex-between">
+      <h1>DISCIPLINA AUDIT</h1>
+      <div class="flex-center">
+        <span class="clock-label">Hora:</span>
+        <span class="clock" id="clock">00:00:00</span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <!-- Sección de progreso semanal -->
+    <section class="mb-lg">
+      <h2>Progreso Semanal</h2>
+      <div id="progress-stats" class="stats">
+        <!-- Se renderiza dinámicamente con JS -->
+      </div>
+    </section>
+
+    <!-- Grid de 4 tarjetas principales -->
+    <section>
+      <h2 style="margin-bottom: var(--spacing-xl);">Módulos de Auditoría</h2>
+      <div class="grid grid-4" id="dashboard-grid">
+        
+        <!-- TARJETA 1: ENTRENAMIENTO -->
+        <a href="src/pages/entrenamiento.html" style="text-decoration: none;">
+          <div class="card dashboard-card" id="card-entrenamiento">
+            <div>
+              <div class="dashboard-card-title">ENTRENAMIENTO</div>
+              <div class="dashboard-card-status" id="status-entrenamiento">
+                PENDIENTE
+              </div>
+            </div>
+            <div class="text-muted" style="font-size: 0.875rem; margin-top: var(--spacing-md);">
+              Cardio + Sobrecarga Progresiva
+            </div>
+          </div>
+        </a>
+
+        <!-- TARJETA 2: NUTRICIÓN -->
+        <a href="src/pages/nutricion.html" style="text-decoration: none;">
+          <div class="card dashboard-card" id="card-nutricion">
+            <div>
+              <div class="dashboard-card-title">NUTRICIÓN</div>
+              <div class="dashboard-card-status" id="status-nutricion">
+                PENDIENTE
+              </div>
+            </div>
+            <div class="text-muted" style="font-size: 0.875rem; margin-top: var(--spacing-md);">
+              5 Comidas Obligatorias
+            </div>
+          </div>
+        </a>
+
+        <!-- TARJETA 3: PROGRESO -->
+        <a href="src/pages/progreso.html" style="text-decoration: none;">
+          <div class="card dashboard-card" id="card-progreso">
+            <div>
+              <div class="dashboard-card-title">PROGRESO</div>
+              <div class="dashboard-card-status" id="status-progreso">
+                PENDIENTE
+              </div>
+            </div>
+            <div class="text-muted" style="font-size: 0.875rem; margin-top: var(--spacing-md);">
+              Peso Corporal y Gráficas
+            </div>
+          </div>
+        </a>
+
+        <!-- TARJETA 4: HORARIO Y DESCANSO -->
+        <a href="src/pages/horario.html" style="text-decoration: none;">
+          <div class="card dashboard-card" id="card-horario">
+            <div>
+              <div class="dashboard-card-title">HORARIO</div>
+              <div class="dashboard-card-status" id="status-horario">
+                PENDIENTE
+              </div>
+            </div>
+            <div class="text-muted" style="font-size: 0.875rem; margin-top: var(--spacing-md);">
+              Auditoría de Sueño
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>DISCIPLINA AUDIT v1.0 | Panel de Control Estricto | Datos persistentes en localStorage</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="src/js/main.js"></script>
+  <script src="src/js/dashboard.js"></script>
+
+</body>
+</html>

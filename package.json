@@ -1,0 +1,23 @@
+{
+  "name": "disciplina-audit",
+  "version": "1.0.0",
+  "description": "Panel de control estricto para auditar disciplina personal. HTML semántico, CSS moderno, Vanilla JS + localStorage.",
+  "main": "src/js/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "start": "open http://localhost:8000"
+  },
+  "keywords": [
+    "discipline",
+    "audit",
+    "tracking",
+    "vanilla-js",
+    "localStorage"
+  ],
+  "author": "Cris",
+  "license": "MIT",
+  "dependencies": {
+    "chart.js": "^4.4.0"
+  }
+}

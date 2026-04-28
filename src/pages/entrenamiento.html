@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DISCIPLINA AUDIT | Entrenamiento</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <nav class="flex-between">
+      <h1>ENTRENAMIENTO</h1>
+      <a href="../../index.html" class="btn btn-secondary">← Volver</a>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- SECCIÓN 1: CARDIO OBLIGATORIO -->
+    <section class="mb-xl">
+      <h2>Cardio Obligatorio</h2>
+      <p class="text-muted">
+        Especificaciones EXACTAS. Cualquier alteración marca el día como FALLADO.
+      </p>
+
+      <form id="form-cardio" class="card mb-lg" style="padding: var(--spacing-xl);">
+        
+        <div class="form-group">
+          <label for="cardio-velocidad">
+            Velocidad Caminadora (km/h)
+            <br>
+            <span style="color: var(--success); font-weight: 700;">DEBE SER: 5.0</span>
+          </label>
+          <input 
+            type="number" 
+            id="cardio-velocidad" 
+            step="0.1" 
+            placeholder="5.0"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="cardio-inclinacion">
+            Inclinación (%)
+            <br>
+            <span style="color: var(--success); font-weight: 700;">DEBE SER: 15</span>
+          </label>
+          <input 
+            type="number" 
+            id="cardio-inclinacion" 
+            step="1" 
+            placeholder="15"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="cardio-tiempo">
+            Tiempo (minutos)
+            <br>
+            <span style="color: var(--text-secondary);">Mínimo 15 minutos</span>
+          </label>
+          <input 
+            type="number" 
+            id="cardio-tiempo" 
+            step="1" 
+            min="15"
+            placeholder="15"
+            required
+          >
+        </div>
+
+        <div id="alert-cardio" class="alert alert-warning hidden mb-md">
+          ⚠️ ADVERTENCIA: Los parámetros no coinciden con la especificación exacta. El día será marcado como FALLADO.
+        </div>
+
+        <button type="submit" class="btn btn-success">Registrar Cardio</button>
+      </form>
+    </section>
+
+    <!-- SECCIÓN 2: PRESS INCLINADO (UNILATERAL) -->
+    <section class="mb-xl">
+      <h2>Press Inclinado en Máquina</h2>
+      <p class="text-muted">
+        Registro unilateral: peso izquierdo y derecho por separado.
+      </p>
+
+      <div class="card mb-lg" style="padding: var(--spacing-xl);">
+        <form id="form-press" class="mb-lg">
+          <div class="input-group">
+            <div class="form-group">
+              <label for="press-peso-izq">Peso Izq (kg)</label>
+              <input type="number" id="press-peso-izq" step="0.5" placeholder="0.0">
+            </div>
+            <div class="form-group">
+              <label for="press-reps-izq">Repeticiones Izq</label>
+              <input type="number" id="press-reps-izq" step="1" placeholder="0">
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="form-group">
+              <label for="press-peso-der">Peso Der (kg)</label>
+              <input type="number" id="press-peso-der" step="0.5" placeholder="0.0">
+            </div>
+            <div class="form-group">
+              <label for="press-reps-der">Repeticiones Der</label>
+              <input type="number" id="press-reps-der" step="1" placeholder="0">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success">Agregar Registro</button>
+        </form>
+
+        <table id="table-press">
+          <thead>
+            <tr>
+              <th>Lado</th>
+              <th>Peso (kg)</th>
+              <th>Reps</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-press">
+            <!-- Se renderiza dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: CURL BANCO SCOTT (UNILATERAL) -->
+    <section class="mb-xl">
+      <h2>Curl en Banco Scott</h2>
+      <p class="text-muted">
+        Registro unilateral: peso izquierdo y derecho por separado.
+      </p>
+
+      <div class="card mb-lg" style="padding: var(--spacing-xl);">
+        <form id="form-curl" class="mb-lg">
+          <div class="input-group">
+            <div class="form-group">
+              <label for="curl-peso-izq">Peso Izq (kg)</label>
+              <input type="number" id="curl-peso-izq" step="0.5" placeholder="0.0">
+            </div>
+            <div class="form-group">
+              <label for="curl-reps-izq">Repeticiones Izq</label>
+              <input type="number" id="curl-reps-izq" step="1" placeholder="0">
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="form-group">
+              <label for="curl-peso-der">Peso Der (kg)</label>
+              <input type="number" id="curl-peso-der" step="0.5" placeholder="0.0">
+            </div>
+            <div class="form-group">
+              <label for="curl-reps-der">Repeticiones Der</label>
+              <input type="number" id="curl-reps-der" step="1" placeholder="0">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success">Agregar Registro</button>
+        </form>
+
+        <table id="table-curl">
+          <thead>
+            <tr>
+              <th>Lado</th>
+              <th>Peso (kg)</th>
+              <th>Reps</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-curl">
+            <!-- Se renderiza dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>ENTRENAMIENTO | Registro de Sobrecarga Progresiva</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/main.js"></script>
+  <script src="../js/entrenamiento.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DISCIPLINA AUDIT | Horario y Descanso</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <nav class="flex-between">
+      <h1>HORARIO Y DESCANSO</h1>
+      <a href="../../index.html" class="btn btn-secondary">← Volver</a>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- INFORMACIÓN IMPORTANTE -->
+    <section class="mb-xl">
+      <h2>Auditoría de Sueño</h2>
+      <p class="text-muted">
+        Registro de horario de dormir según el tipo de día. Validación binaria: cumple o falla.
+      </p>
+    </section>
+
+    <!-- ESTADO DEL DÍA -->
+    <section class="mb-xl">
+      <div id="day-status" class="alert alert-danger">
+        Estado: PENDIENTE (Sin registro)
+      </div>
+    </section>
+
+    <!-- FORMULARIO DE SUEÑO -->
+    <section class="mb-xl">
+      <form id="form-sueño" class="card" style="padding: var(--spacing-xl); max-width: 600px;">
+        
+        <!-- Tipo de día -->
+        <div class="form-group">
+          <label for="tipo-dia">
+            Tipo de Día
+            <br>
+            <span class="text-muted" style="font-size: 0.875rem;">Selecciona el tipo de día para determinar límite de sueño</span>
+          </label>
+          <select id="tipo-dia" onchange="horarioPage.actualizarLimite()" required>
+            <option value="">-- Selecciona tipo de día --</option>
+            <option value="normal">Normal (Límite: 21:00-22:00)</option>
+            <option value="partido">Día de Partido (Límite: hasta 23:00)</option>
+            <option value="fiesta">Día de Fiesta (Fin de semana - Sin límite)</option>
+          </select>
+        </div>
+
+        <!-- Hora de dormir -->
+        <div class="form-group">
+          <label for="hora-dormir">
+            Hora de Dormir
+            <br>
+            <span id="limite-info" class="text-muted" style="font-size: 0.875rem;">Selecciona un tipo de día</span>
+          </label>
+          <input 
+            type="time" 
+            id="hora-dormir"
+            onchange="horarioPage.validarHora()"
+            required
+          >
+        </div>
+
+        <!-- Alerta de validación -->
+        <div id="alert-validacion" class="alert alert-info hidden mb-md">
+          <span id="alert-text"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Registrar Sueño</button>
+      </form>
+    </section>
+
+    <!-- INFORMACIÓN SEGÚN TIPO DE DÍA -->
+    <section class="mb-xl">
+      <h2>Especificaciones por Tipo de Día</h2>
+      
+      <div class="grid grid-3">
+        <!-- NORMAL -->
+        <div class="card">
+          <div class="card-title">NORMAL</div>
+          <div class="card-content">
+            <p><strong>Rango Permitido:</strong> 21:00 - 22:00</p>
+            <p><strong>Objetivo:</strong> 8 horas de sueño (despertar ~05:00)</p>
+            <p><strong>Consecuencia:</strong> Fuera del rango = FALLADO</p>
+          </div>
+        </div>
+
+        <!-- PARTIDO -->
+        <div class="card">
+          <div class="card-title">DÍA DE PARTIDO</div>
+          <div class="card-content">
+            <p><strong>Rango Permitido:</strong> 21:00 - 23:00</p>
+            <p><strong>Objetivo:</strong> Al menos 6-7 horas (estrés competitivo)</p>
+            <p><strong>Consecuencia:</strong> Fuera del rango = FALLADO</p>
+          </div>
+        </div>
+
+        <!-- FIESTA -->
+        <div class="card">
+          <div class="card-title">DÍA DE FIESTA</div>
+          <div class="card-content">
+            <p><strong>Límite:</strong> Sin restricción</p>
+            <p><strong>Objetivo:</strong> Registrar falta de sueño</p>
+            <p><strong>Consecuencia:</strong> Se calcula horas perdidas vs 8h</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CÁLCULO DE FALTA DE SUEÑO (FIESTA) -->
+    <section class="mb-xl" id="section-falta-sueño" class="hidden">
+      <h2>Cálculo de Falta de Sueño</h2>
+      <div class="stats">
+        <div class="stat-box">
+          <div class="stat-value" id="horas-dormidas">-</div>
+          <div class="stat-label">Horas de Sueño</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="horas-faltantes">-</div>
+          <div class="stat-label">Horas Faltantes vs 8h</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTÓRICO -->
+    <section class="mb-xl">
+      <h2>Histórico de Sueño</h2>
+      <table id="table-historico">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo Día</th>
+            <th>Hora Dormir</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-historico">
+          <!-- Se renderiza dinámicamente -->
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>HORARIO Y DESCANSO | Auditoría de Sueño</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/main.js"></script>
+  <script src="../js/horario.js"></script>
+
+</body>
+</html>
