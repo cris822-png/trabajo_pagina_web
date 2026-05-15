@@ -11,11 +11,14 @@ class EntrenamientoPage {
   constructor() {
     this.storage = new StorageManager();
     this.hoy = this.storage.getTodayISO();
+    this.timerInterval = null;
   }
 
   init() {
     this.setupFormFuerza();
     this.setupFormCardio();
+    this.setupIniciarButton();
+    this.setupTerminarButton();
     this.setupDeleteHandlers();
     this.render();
   }
@@ -58,10 +61,20 @@ class EntrenamientoPage {
     });
   }
 
+  setupIniciarButton() {
+    const button = document.getElementById('btn-iniciar-entrenamiento');
+    if (!button) return;
+
+    button.addEventListener('click', () => {
+      this.iniciarEntrenamiento();
+    });
+  }
+
   obtenerEntrenamiento() {
     const entrenamiento = this.storage.getEntrenamiento(this.hoy) || {};
     entrenamiento.fuerza = entrenamiento.fuerza || [];
     entrenamiento.cardio = entrenamiento.cardio || [];
+    entrenamiento.startedAt = entrenamiento.startedAt || null;
     return entrenamiento;
   }
 
@@ -132,8 +145,11 @@ class EntrenamientoPage {
 
   render() {
     const entrenamiento = this.obtenerEntrenamiento();
+    this.renderSesionActual(entrenamiento);
     this.renderTablaFuerza(entrenamiento.fuerza);
     this.renderTablaCardio(entrenamiento.cardio);
+    this.renderHistoricoEntrenamientos();
+    this.setupTimer(entrenamiento);
   }
 
   renderTablaFuerza(registros) {
@@ -183,6 +199,154 @@ class EntrenamientoPage {
         <td>
           <button class="btn btn-danger btn-small" data-action="delete" data-type="cardio" data-id="${registro.id}">Eliminar</button>
         </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  setupTerminarButton() {
+    const button = document.getElementById('btn-terminar-entrenamiento');
+    if (!button) return;
+
+    button.addEventListener('click', () => {
+      this.terminarEntrenamiento();
+    });
+  }
+
+  setupTimer(entrenamiento) {
+    const timerEl = document.getElementById('entrenamiento-timer');
+    const iniciarButton = document.getElementById('btn-iniciar-entrenamiento');
+    const terminarButton = document.getElementById('btn-terminar-entrenamiento');
+
+    if (!entrenamiento.startedAt) {
+      if (timerEl) timerEl.textContent = '00:00:00';
+      if (iniciarButton) iniciarButton.disabled = false;
+      if (terminarButton) terminarButton.disabled = true;
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+      return;
+    }
+
+    if (iniciarButton) iniciarButton.disabled = true;
+    if (terminarButton) terminarButton.disabled = false;
+    this.updateTimer(entrenamiento.startedAt);
+
+    if (!this.timerInterval) {
+      this.timerInterval = setInterval(() => {
+        this.updateTimer(entrenamiento.startedAt);
+      }, 1000);
+    }
+  }
+
+  updateTimer(startedAt) {
+    const timerEl = document.getElementById('entrenamiento-timer');
+    if (!timerEl) return;
+
+    const start = new Date(startedAt);
+    const diff = Math.max(0, Date.now() - start.getTime());
+    const hours = String(Math.floor(diff / 3600000)).padStart(2, '0');
+    const minutes = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+    const seconds = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+    timerEl.textContent = `${hours}:${minutes}:${seconds}`;
+  }
+
+  iniciarEntrenamiento() {
+    const entrenamiento = this.obtenerEntrenamiento();
+    if (entrenamiento.startedAt) {
+      return;
+    }
+
+    entrenamiento.startedAt = new Date().toISOString();
+    this.guardarEntrenamiento(entrenamiento);
+    this.render();
+  }
+
+  renderSesionActual(entrenamiento) {
+    const content = document.getElementById('entrenando-content');
+    const fuerza = entrenamiento.fuerza || [];
+    const cardio = entrenamiento.cardio || [];
+
+    const duracionTotal = cardio.reduce((total, registro) => total + registro.duracion, 0);
+    const fuerzaHtml = fuerza.length
+      ? `<ul>${fuerza.map((registro) => `<li>${Utils.escapeHTML(registro.nombre)} — ${Utils.formatNumber(registro.peso, 1)} kg × ${registro.reps} reps (${registro.tipo})</li>`).join('')}</ul>`
+      : '<p class="text-muted">No hay ejercicios de fuerza agregados.</p>';
+    const cardioHtml = cardio.length
+      ? `<ul>${cardio.map((registro) => `<li>${Utils.escapeHTML(registro.maquina)} — ${registro.duracion} min, ${Utils.formatNumber(registro.inclinacion, 1)}% inclinación, ${Utils.formatNumber(registro.velocidad, 1)} km/h</li>`).join('')}</ul>`
+      : '<p class="text-muted">No hay ejercicios de cardio agregados.</p>';
+
+    content.innerHTML = `
+      <div class="stat-box">
+        <div class="stat-value">${fuerza.length}</div>
+        <div class="stat-label">Ejercicios de fuerza</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">${cardio.length}</div>
+        <div class="stat-label">Ejercicios de cardio</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">${duracionTotal} min</div>
+        <div class="stat-label">Duración total cardio</div>
+      </div>
+      <div class="mt-md">
+        <h4>Fuerza</h4>
+        ${fuerzaHtml}
+      </div>
+      <div class="mt-md">
+        <h4>Cardio</h4>
+        ${cardioHtml}
+      </div>
+    `;
+  }
+
+  terminarEntrenamiento() {
+    const entrenamiento = this.obtenerEntrenamiento();
+    const fuerza = entrenamiento.fuerza || [];
+    const cardio = entrenamiento.cardio || [];
+
+    if (!fuerza.length && !cardio.length) {
+      alert('No hay ejercicios en la sesión actual para terminar.');
+      return;
+    }
+
+    const sesion = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      fecha: new Date().toISOString(),
+      fuerza,
+      cardio,
+      total_ejercicios: fuerza.length + cardio.length,
+      duracion_total: cardio.reduce((total, registro) => total + registro.duracion, 0),
+    };
+
+    this.storage.addEntrenamientoHistorico(sesion);
+    this.guardarEntrenamiento({ fuerza: [], cardio: [], startedAt: null });
+    clearInterval(this.timerInterval);
+    this.timerInterval = null;
+    this.render();
+  }
+
+  obtenerEntrenamientoHistorico() {
+    return this.storage.getEntrenamientoHistorico() || [];
+  }
+
+  renderHistoricoEntrenamientos() {
+    const historial = this.obtenerEntrenamientoHistorico();
+    const tbody = document.getElementById('tbody-historico-entrenamientos');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+
+    if (!historial.length) {
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No hay sesiones terminadas aún.</td></tr>';
+      return;
+    }
+
+    historial.forEach((sesion) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${Utils.formatFecha(sesion.fecha)}</td>
+        <td>${sesion.fuerza.length}</td>
+        <td>${sesion.cardio.length}</td>
+        <td>${sesion.tiempo_sesion || '00:00:00'}</td>
       `;
       tbody.appendChild(row);
     });

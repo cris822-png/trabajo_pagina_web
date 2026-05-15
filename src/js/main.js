@@ -28,6 +28,7 @@ class StorageManager {
         nutricion: {},
         peso_diario: {},
         sueño: {},
+        entrenamiento_historico: [],
       };
       this.setRaw(initialData);
     }
@@ -86,6 +87,26 @@ class StorageManager {
       data.entrenamiento[fecha] = {};
     }
     data.entrenamiento[fecha] = entrenamiento;
+    this.setRaw(data);
+  }
+
+  /**
+   * Obtiene histórico de sesiones de entrenamiento
+   */
+  getEntrenamientoHistorico() {
+    const data = this.getData();
+    return data.entrenamiento_historico || [];
+  }
+
+  /**
+   * Agrega una sesión al histórico de entrenamiento
+   */
+  addEntrenamientoHistorico(sesion) {
+    const data = this.getData();
+    if (!Array.isArray(data.entrenamiento_historico)) {
+      data.entrenamiento_historico = [];
+    }
+    data.entrenamiento_historico.unshift(sesion);
     this.setRaw(data);
   }
 

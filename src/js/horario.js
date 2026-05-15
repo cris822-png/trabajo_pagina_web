@@ -158,11 +158,11 @@ class HorarioPage {
       if (esValido) {
         statusEl.classList.remove('alert-danger');
         statusEl.classList.add('alert-success');
-        statusEl.innerHTML = `<span style="color: var(--success);">✓ Estado: CUMPLIDO</span>`;
+        statusEl.innerHTML = `<span class="text-success">✓ Estado: CUMPLIDO</span>`;
       } else {
         statusEl.classList.remove('alert-success');
         statusEl.classList.add('alert-danger');
-        statusEl.innerHTML = `<span style="color: var(--danger);">✗ Estado: FALLADO</span>`;
+        statusEl.innerHTML = `<span class="text-danger">✗ Estado: FALLADO</span>`;
       }
     }
   }

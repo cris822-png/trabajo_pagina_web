@@ -6,7 +6,7 @@
   <title>DISCIPLINA AUDIT | Entrenamiento</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
+<body class="page-entrenamiento">
 
   <!-- HEADER -->
   <header>
@@ -82,6 +82,45 @@
 
         <button type="submit" class="btn btn-success">Agregar registro de cardio</button>
       </form>
+    </section>
+
+    <section class="mb-xl">
+      <div class="card card-section">
+        <div class="flex-between">
+          <div>
+            <h2>Entrenando</h2>
+            <p class="text-muted">Sesión actual con ejercicios agregados. Inicia para medir el tiempo y termina para guardar el entrenamiento.</p>
+          </div>
+          <div class="flex">
+            <button type="button" id="btn-iniciar-entrenamiento" class="btn btn-secondary">Iniciar Entrenamiento</button>
+            <button type="button" id="btn-terminar-entrenamiento" class="btn btn-success">Terminar Entrenamiento</button>
+          </div>
+        </div>
+
+        <div class="mt-md">
+          <span class="text-muted">Tiempo de sesión:</span>
+          <span id="entrenamiento-timer" class="text-success">00:00:00</span>
+        </div>
+
+        <div id="entrenando-content" class="mt-lg"></div>
+      </div>
+    </section>
+
+    <section class="mb-xl">
+      <h2>Histórico de Entrenamientos</h2>
+      <div class="card card-section table-responsive">
+        <table id="table-historico-entrenamientos">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Fuerza</th>
+              <th>Cardio</th>
+              <th>Tiempo de Sesión</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-historico-entrenamientos"></tbody>
+        </table>
+      </div>
     </section>
 
     <section class="mb-xl">

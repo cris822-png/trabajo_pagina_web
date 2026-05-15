@@ -52,6 +52,26 @@ body {
   overflow-x: hidden;
 }
 
+body.page-dashboard {
+  background: linear-gradient(rgba(18,18,18,0.85), rgba(18,18,18,0.85)), url("../assets/fondo.jpg") center/cover fixed no-repeat;
+}
+
+body.page-nutricion {
+  background: linear-gradient(rgba(18,18,18,0.9), rgba(18,18,18,0.9)), url("../assets/comida.jpg") center/cover fixed no-repeat;
+}
+
+body.page-horario {
+  background: linear-gradient(rgba(18,18,18,0.9), rgba(18,18,18,0.9)), url("../assets/horario.png") center/cover fixed no-repeat;
+}
+
+body.page-progreso {
+  background: linear-gradient(rgba(18,18,18,0.9), rgba(18,18,18,0.9)), url("../assets/progreso.png") center/cover fixed no-repeat;
+}
+
+body.page-entrenamiento {
+  background: linear-gradient(rgba(18,18,18,0.9), rgba(18,18,18,0.9)), url("../assets/gym.webp") center/cover fixed no-repeat;
+}
+
 /* ============================================
    TIPOGRAFÍA
    ============================================ */
@@ -205,6 +225,43 @@ footer {
   background-color: rgba(255, 85, 85, 0.05);
 }
 
+#card-entrenamiento {
+  background: linear-gradient(rgba(18, 18, 18, 0.75), rgba(18, 18, 18, 0.75)), url("../assets/gym.webp") center/cover no-repeat;
+  color: var(--text-primary);
+}
+
+#card-nutricion {
+  background: linear-gradient(rgba(18, 18, 18, 0.75), rgba(18, 18, 18, 0.75)), url("../assets/comida.jpg") center/cover no-repeat;
+  color: var(--text-primary);
+}
+
+#card-horario {
+  background: linear-gradient(rgba(18, 18, 18, 0.75), rgba(18, 18, 18, 0.75)), url("../assets/horario.png") center/cover no-repeat;
+  color: var(--text-primary);
+}
+
+#card-progreso {
+  background: linear-gradient(rgba(18, 18, 18, 0.75), rgba(18, 18, 18, 0.75)), url("../assets/progreso.png") center/cover no-repeat;
+  color: var(--text-primary);
+}
+
+body.page-nutricion .card-section,
+body.page-nutricion .form-card,
+body.page-horario .card-section,
+body.page-horario .form-card,
+body.page-progreso .card-section,
+body.page-progreso .form-card,
+body.page-entrenamiento .card-section,
+body.page-entrenamiento .form-card {
+  background-color: rgba(0, 0, 0, 0.85);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+body.page-entrenamiento main {
+  background: transparent;
+}
+
 .card-title {
   font-size: 1.25rem;
   font-weight: 600;
@@ -215,6 +272,28 @@ footer {
   font-size: 0.95rem;
   color: var(--text-secondary);
   line-height: 1.6;
+}
+
+.card-description {
+  font-size: 0.875rem;
+}
+
+.small-text {
+  font-size: 0.875rem;
+}
+
+.form-card {
+  padding: var(--spacing-xl);
+  max-width: 600px;
+}
+
+.card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-link:hover {
+  color: inherit;
 }
 
 .card-status {

@@ -6,7 +6,7 @@
   <title>DISCIPLINA AUDIT | Horario y Descanso</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
+<body class="page-horario">
 
   <!-- HEADER -->
   <header>
@@ -36,14 +36,14 @@
 
     <!-- FORMULARIO DE SUEÑO -->
     <section class="mb-xl">
-      <form id="form-sueño" class="card" style="padding: var(--spacing-xl); max-width: 600px;">
+      <form id="form-sueño" class="card form-card">
         
         <!-- Tipo de día -->
         <div class="form-group">
           <label for="tipo-dia">
             Tipo de Día
             <br>
-            <span class="text-muted" style="font-size: 0.875rem;">Selecciona el tipo de día para determinar límite de sueño</span>
+            <span class="text-muted small-text">Selecciona el tipo de día para determinar límite de sueño</span>
           </label>
           <select id="tipo-dia" onchange="horarioPage.actualizarLimite()" required>
             <option value="">-- Selecciona tipo de día --</option>
@@ -58,7 +58,7 @@
           <label for="hora-dormir">
             Hora de Dormir
             <br>
-            <span id="limite-info" class="text-muted" style="font-size: 0.875rem;">Selecciona un tipo de día</span>
+            <span id="limite-info" class="text-muted small-text">Selecciona un tipo de día</span>
           </label>
           <input 
             type="time" 
@@ -115,7 +115,7 @@
     </section>
 
     <!-- CÁLCULO DE FALTA DE SUEÑO (FIESTA) -->
-    <section class="mb-xl" id="section-falta-sueño" class="hidden">
+    <section id="section-falta-sueño" class="mb-xl hidden">
       <h2>Cálculo de Falta de Sueño</h2>
       <div class="stats">
         <div class="stat-box">
