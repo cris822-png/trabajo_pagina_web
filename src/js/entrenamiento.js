@@ -3,8 +3,8 @@
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const entrenamiento = new EntrenamientoPage();
-  entrenamiento.init();
+  const entrenamientoPage = new EntrenamientoPage();
+  entrenamientoPage.init();
 });
 
 class EntrenamientoPage {
@@ -14,230 +14,177 @@ class EntrenamientoPage {
   }
 
   init() {
+    this.setupFormFuerza();
     this.setupFormCardio();
-    this.setupFormPress();
-    this.setupFormCurl();
+    this.setupDeleteHandlers();
     this.render();
   }
 
-  /**
-   * Configura formulario de cardio
-   */
+  setupFormFuerza() {
+    const form = document.getElementById('form-fuerza');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.agregarRegistroFuerza();
+    });
+  }
+
   setupFormCardio() {
     const form = document.getElementById('form-cardio');
-    const velocidad = document.getElementById('cardio-velocidad');
-    const inclinacion = document.getElementById('cardio-inclinacion');
-    const alertaEl = document.getElementById('alert-cardio');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.agregarRegistroCardio();
+    });
+  }
 
-    // Validar en tiempo real
-    const validar = () => {
-      const esValido = 
-        parseFloat(velocidad.value) === 5.0 &&
-        parseInt(inclinacion.value) === 15;
-      
-      if (!esValido) {
-        alertaEl.classList.remove('hidden');
-      } else {
-        alertaEl.classList.add('hidden');
+  setupDeleteHandlers() {
+    document.getElementById('tbody-fuerza').addEventListener('click', (event) => {
+      const button = event.target.closest('button[data-action]');
+      if (!button) return;
+      const tipo = button.dataset.type;
+      const id = button.dataset.id;
+      if (tipo && id) {
+        this.eliminarRegistro(tipo, id);
       }
-    };
+    });
 
-    velocidad.addEventListener('input', validar);
-    inclinacion.addEventListener('input', validar);
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.guardarCardio();
+    document.getElementById('tbody-cardio').addEventListener('click', (event) => {
+      const button = event.target.closest('button[data-action]');
+      if (!button) return;
+      const tipo = button.dataset.type;
+      const id = button.dataset.id;
+      if (tipo && id) {
+        this.eliminarRegistro(tipo, id);
+      }
     });
   }
 
-  /**
-   * Guarda datos de cardio
-   */
-  guardarCardio() {
+  obtenerEntrenamiento() {
+    const entrenamiento = this.storage.getEntrenamiento(this.hoy) || {};
+    entrenamiento.fuerza = entrenamiento.fuerza || [];
+    entrenamiento.cardio = entrenamiento.cardio || [];
+    return entrenamiento;
+  }
+
+  guardarEntrenamiento(entrenamiento) {
+    this.storage.setEntrenamiento(this.hoy, entrenamiento);
+  }
+
+  agregarRegistroFuerza() {
+    const nombre = document.getElementById('fuerza-nombre').value.trim();
+    const peso = parseFloat(document.getElementById('fuerza-peso').value);
+    const reps = parseInt(document.getElementById('fuerza-reps').value, 10);
+    const tipo = document.getElementById('fuerza-tipo').value;
+
+    if (!nombre || !peso || !reps) {
+      alert('Completa todos los campos de fuerza.');
+      return;
+    }
+
+    const registro = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      nombre,
+      peso,
+      reps,
+      tipo,
+      fecha: new Date().toISOString(),
+    };
+
+    const entrenamiento = this.obtenerEntrenamiento();
+    entrenamiento.fuerza.unshift(registro);
+    this.guardarEntrenamiento(entrenamiento);
+    document.getElementById('form-fuerza').reset();
+    this.render();
+  }
+
+  agregarRegistroCardio() {
+    const maquina = document.getElementById('cardio-maquina').value.trim();
+    const duracion = parseInt(document.getElementById('cardio-duracion').value, 10);
+    const inclinacion = parseFloat(document.getElementById('cardio-inclinacion').value);
     const velocidad = parseFloat(document.getElementById('cardio-velocidad').value);
-    const inclinacion = parseInt(document.getElementById('cardio-inclinacion').value);
-    const tiempo = parseInt(document.getElementById('cardio-tiempo').value);
 
-    const cardioData = {
-      velocidad,
+    if (!maquina || Number.isNaN(duracion) || Number.isNaN(inclinacion) || Number.isNaN(velocidad)) {
+      alert('Completa todos los campos de cardio.');
+      return;
+    }
+
+    const registro = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      maquina,
+      duracion,
       inclinacion,
-      tiempo,
-      timestamp: new Date().toISOString()
+      velocidad,
+      fecha: new Date().toISOString(),
     };
 
-    let entrenamiento = this.storage.getEntrenamiento(this.hoy) || {};
-    entrenamiento.cardio = cardioData;
-    this.storage.setEntrenamiento(this.hoy, entrenamiento);
-
-    // Mostrar confirmación
-    alert('Cardio registrado');
+    const entrenamiento = this.obtenerEntrenamiento();
+    entrenamiento.cardio.unshift(registro);
+    this.guardarEntrenamiento(entrenamiento);
+    document.getElementById('form-cardio').reset();
     this.render();
   }
 
-  /**
-   * Configura formulario de Press Inclinado
-   */
-  setupFormPress() {
-    const form = document.getElementById('form-press');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.agregarRegistroPress();
-    });
-  }
-
-  /**
-   * Agrega registro de Press
-   */
-  agregarRegistroPress() {
-    const pesoIzq = parseFloat(document.getElementById('press-peso-izq').value);
-    const repsIzq = parseInt(document.getElementById('press-reps-izq').value);
-    const pesoDer = parseFloat(document.getElementById('press-peso-der').value);
-    const repsDer = parseInt(document.getElementById('press-reps-der').value);
-
-    if (!pesoIzq || !repsIzq || !pesoDer || !repsDer) {
-      alert('Completa todos los campos');
-      return;
-    }
-
-    let entrenamiento = this.storage.getEntrenamiento(this.hoy) || {};
-    if (!entrenamiento.press_inclinado) {
-      entrenamiento.press_inclinado = [];
-    }
-
-    entrenamiento.press_inclinado.push({
-      lado: 'izq',
-      peso: pesoIzq,
-      reps: repsIzq
-    });
-
-    entrenamiento.press_inclinado.push({
-      lado: 'der',
-      peso: pesoDer,
-      reps: repsDer
-    });
-
-    this.storage.setEntrenamiento(this.hoy, entrenamiento);
-    document.getElementById('form-press').reset();
+  eliminarRegistro(tipo, id) {
+    const entrenamiento = this.obtenerEntrenamiento();
+    entrenamiento[tipo] = entrenamiento[tipo].filter((registro) => registro.id !== id);
+    this.guardarEntrenamiento(entrenamiento);
     this.render();
   }
 
-  /**
-   * Configura formulario de Curl Scott
-   */
-  setupFormCurl() {
-    const form = document.getElementById('form-curl');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.agregarRegistroCurl();
-    });
-  }
-
-  /**
-   * Agrega registro de Curl
-   */
-  agregarRegistroCurl() {
-    const pesoIzq = parseFloat(document.getElementById('curl-peso-izq').value);
-    const repsIzq = parseInt(document.getElementById('curl-reps-izq').value);
-    const pesoDer = parseFloat(document.getElementById('curl-peso-der').value);
-    const repsDer = parseInt(document.getElementById('curl-reps-der').value);
-
-    if (!pesoIzq || !repsIzq || !pesoDer || !repsDer) {
-      alert('Completa todos los campos');
-      return;
-    }
-
-    let entrenamiento = this.storage.getEntrenamiento(this.hoy) || {};
-    if (!entrenamiento.curl_scott) {
-      entrenamiento.curl_scott = [];
-    }
-
-    entrenamiento.curl_scott.push({
-      lado: 'izq',
-      peso: pesoIzq,
-      reps: repsIzq
-    });
-
-    entrenamiento.curl_scott.push({
-      lado: 'der',
-      peso: pesoDer,
-      reps: repsDer
-    });
-
-    this.storage.setEntrenamiento(this.hoy, entrenamiento);
-    document.getElementById('form-curl').reset();
-    this.render();
-  }
-
-  /**
-   * Elimina un registro de Press
-   */
-  eliminarRegistroPress(index) {
-    const entrenamiento = this.storage.getEntrenamiento(this.hoy) || {};
-    if (entrenamiento.press_inclinado) {
-      entrenamiento.press_inclinado.splice(index, 1);
-      this.storage.setEntrenamiento(this.hoy, entrenamiento);
-      this.render();
-    }
-  }
-
-  /**
-   * Elimina un registro de Curl
-   */
-  eliminarRegistroCurl(index) {
-    const entrenamiento = this.storage.getEntrenamiento(this.hoy) || {};
-    if (entrenamiento.curl_scott) {
-      entrenamiento.curl_scott.splice(index, 1);
-      this.storage.setEntrenamiento(this.hoy, entrenamiento);
-      this.render();
-    }
-  }
-
-  /**
-   * Renderiza la página
-   */
   render() {
-    const entrenamiento = this.storage.getEntrenamiento(this.hoy);
-    
-    // Renderizar tabla Press
-    this.renderTabla('tbody-press', entrenamiento?.press_inclinado, 'press');
-
-    // Renderizar tabla Curl
-    this.renderTabla('tbody-curl', entrenamiento?.curl_scott, 'curl');
+    const entrenamiento = this.obtenerEntrenamiento();
+    this.renderTablaFuerza(entrenamiento.fuerza);
+    this.renderTablaCardio(entrenamiento.cardio);
   }
 
-  /**
-   * Renderiza una tabla de registros
-   */
-  renderTabla(tbodyId, registros, tipo) {
-    const tbody = document.getElementById(tbodyId);
+  renderTablaFuerza(registros) {
+    const tbody = document.getElementById('tbody-fuerza');
     tbody.innerHTML = '';
 
-    if (!registros || registros.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Sin registros</td></tr>';
+    if (!registros.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Sin registros de fuerza</td></tr>';
       return;
     }
 
-    registros.forEach((registro, index) => {
+    registros.sort((a, b) => b.fecha.localeCompare(a.fecha));
+    registros.forEach((registro) => {
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td>${registro.lado === 'izq' ? 'IZQUIERDO' : 'DERECHO'}</td>
-        <td>${Utils.formatNumber(registro.peso, 1)}</td>
+        <td>${Utils.formatFecha(registro.fecha)}</td>
+        <td>${Utils.escapeHTML(registro.nombre)}</td>
+        <td>${Utils.formatNumber(registro.peso, 1)} kg</td>
         <td>${registro.reps}</td>
+        <td>${registro.tipo}</td>
         <td>
-          <button class="btn btn-danger" onclick="entrenamiento.eliminarRegistro${tipo.charAt(0).toUpperCase() + tipo.slice(1)}(${index})">
-            Eliminar
-          </button>
+          <button class="btn btn-danger btn-small" data-action="delete" data-type="fuerza" data-id="${registro.id}">Eliminar</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  renderTablaCardio(registros) {
+    const tbody = document.getElementById('tbody-cardio');
+    tbody.innerHTML = '';
+
+    if (!registros.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Sin registros de cardio</td></tr>';
+      return;
+    }
+
+    registros.sort((a, b) => b.fecha.localeCompare(a.fecha));
+    registros.forEach((registro) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${Utils.formatFecha(registro.fecha)}</td>
+        <td>${Utils.escapeHTML(registro.maquina)}</td>
+        <td>${registro.duracion} min</td>
+        <td>${Utils.formatNumber(registro.inclinacion, 1)}%</td>
+        <td>${Utils.formatNumber(registro.velocidad, 1)} km/h</td>
+        <td>
+          <button class="btn btn-danger btn-small" data-action="delete" data-type="cardio" data-id="${registro.id}">Eliminar</button>
         </td>
       `;
       tbody.appendChild(row);
     });
   }
 }
-
-// Variable global para acceder desde onclick
-let entrenamiento;
-document.addEventListener('DOMContentLoaded', () => {
-  entrenamiento = new EntrenamientoPage();
-  entrenamiento.init();
-});

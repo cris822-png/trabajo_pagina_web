@@ -19,162 +19,111 @@
   <!-- MAIN -->
   <main>
 
-    <!-- SECCIÓN 1: CARDIO OBLIGATORIO -->
     <section class="mb-xl">
-      <h2>Cardio Obligatorio</h2>
-      <p class="text-muted">
-        Especificaciones EXACTAS. Cualquier alteración marca el día como FALLADO.
-      </p>
+      <h2>Fuerza</h2>
+      <p class="text-muted">Registra cada ejercicio, peso, repeticiones y si fue unilateral o bilateral.</p>
 
-      <form id="form-cardio" class="card mb-lg" style="padding: var(--spacing-xl);">
-        
-        <div class="form-group">
-          <label for="cardio-velocidad">
-            Velocidad Caminadora (km/h)
-            <br>
-            <span style="color: var(--success); font-weight: 700;">DEBE SER: 5.0</span>
-          </label>
-          <input 
-            type="number" 
-            id="cardio-velocidad" 
-            step="0.1" 
-            placeholder="5.0"
-            required
-          >
+      <form id="form-fuerza" class="card card-section">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fuerza-nombre">Ejercicio</label>
+            <input type="text" id="fuerza-nombre" placeholder="Nombre del ejercicio" required>
+          </div>
+          <div class="form-group">
+            <label for="fuerza-peso">Peso (kg)</label>
+            <input type="number" id="fuerza-peso" step="0.5" placeholder="0.0" required>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="cardio-inclinacion">
-            Inclinación (%)
-            <br>
-            <span style="color: var(--success); font-weight: 700;">DEBE SER: 15</span>
-          </label>
-          <input 
-            type="number" 
-            id="cardio-inclinacion" 
-            step="1" 
-            placeholder="15"
-            required
-          >
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fuerza-reps">Repeticiones</label>
+            <input type="number" id="fuerza-reps" step="1" placeholder="0" required>
+          </div>
+          <div class="form-group">
+            <label for="fuerza-tipo">Tipo</label>
+            <select id="fuerza-tipo" required>
+              <option value="bilateral">Bilateral</option>
+              <option value="unilateral">Unilateral</option>
+            </select>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="cardio-tiempo">
-            Tiempo (minutos)
-            <br>
-            <span style="color: var(--text-secondary);">Mínimo 15 minutos</span>
-          </label>
-          <input 
-            type="number" 
-            id="cardio-tiempo" 
-            step="1" 
-            min="15"
-            placeholder="15"
-            required
-          >
-        </div>
-
-        <div id="alert-cardio" class="alert alert-warning hidden mb-md">
-          ⚠️ ADVERTENCIA: Los parámetros no coinciden con la especificación exacta. El día será marcado como FALLADO.
-        </div>
-
-        <button type="submit" class="btn btn-success">Registrar Cardio</button>
+        <button type="submit" class="btn btn-success">Agregar registro de fuerza</button>
       </form>
     </section>
 
-    <!-- SECCIÓN 2: PRESS INCLINADO (UNILATERAL) -->
     <section class="mb-xl">
-      <h2>Press Inclinado en Máquina</h2>
-      <p class="text-muted">
-        Registro unilateral: peso izquierdo y derecho por separado.
-      </p>
+      <h2>Cardio</h2>
+      <p class="text-muted">Registra cada sesión de cardio con duración, inclinación y velocidad.</p>
 
-      <div class="card mb-lg" style="padding: var(--spacing-xl);">
-        <form id="form-press" class="mb-lg">
-          <div class="input-group">
-            <div class="form-group">
-              <label for="press-peso-izq">Peso Izq (kg)</label>
-              <input type="number" id="press-peso-izq" step="0.5" placeholder="0.0">
-            </div>
-            <div class="form-group">
-              <label for="press-reps-izq">Repeticiones Izq</label>
-              <input type="number" id="press-reps-izq" step="1" placeholder="0">
-            </div>
+      <form id="form-cardio" class="card card-section">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cardio-maquina">Máquina / Tipo</label>
+            <input type="text" id="cardio-maquina" placeholder="Caminadora, Bicicleta, Remo" required>
           </div>
-          <div class="input-group">
-            <div class="form-group">
-              <label for="press-peso-der">Peso Der (kg)</label>
-              <input type="number" id="press-peso-der" step="0.5" placeholder="0.0">
-            </div>
-            <div class="form-group">
-              <label for="press-reps-der">Repeticiones Der</label>
-              <input type="number" id="press-reps-der" step="1" placeholder="0">
-            </div>
+          <div class="form-group">
+            <label for="cardio-duracion">Duración (min)</label>
+            <input type="number" id="cardio-duracion" step="1" min="1" placeholder="15" required>
           </div>
-          <button type="submit" class="btn btn-success">Agregar Registro</button>
-        </form>
+        </div>
 
-        <table id="table-press">
-          <thead>
-            <tr>
-              <th>Lado</th>
-              <th>Peso (kg)</th>
-              <th>Reps</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-press">
-            <!-- Se renderiza dinámicamente -->
-          </tbody>
-        </table>
-      </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cardio-inclinacion">Inclinación (%)</label>
+            <input type="number" id="cardio-inclinacion" step="0.1" min="0" placeholder="0" required>
+          </div>
+          <div class="form-group">
+            <label for="cardio-velocidad">Velocidad (km/h)</label>
+            <input type="number" id="cardio-velocidad" step="0.1" min="0" placeholder="0" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-success">Agregar registro de cardio</button>
+      </form>
     </section>
 
-    <!-- SECCIÓN 3: CURL BANCO SCOTT (UNILATERAL) -->
     <section class="mb-xl">
-      <h2>Curl en Banco Scott</h2>
-      <p class="text-muted">
-        Registro unilateral: peso izquierdo y derecho por separado.
-      </p>
-
-      <div class="card mb-lg" style="padding: var(--spacing-xl);">
-        <form id="form-curl" class="mb-lg">
-          <div class="input-group">
-            <div class="form-group">
-              <label for="curl-peso-izq">Peso Izq (kg)</label>
-              <input type="number" id="curl-peso-izq" step="0.5" placeholder="0.0">
-            </div>
-            <div class="form-group">
-              <label for="curl-reps-izq">Repeticiones Izq</label>
-              <input type="number" id="curl-reps-izq" step="1" placeholder="0">
-            </div>
+      <h2>Histórico</h2>
+      <div class="card card-section history-grid">
+        <div>
+          <h3>Fuerza</h3>
+          <div class="table-responsive">
+            <table id="table-fuerza">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Ejercicio</th>
+                  <th>Peso</th>
+                  <th>Reps</th>
+                  <th>Tipo</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-fuerza"></tbody>
+            </table>
           </div>
-          <div class="input-group">
-            <div class="form-group">
-              <label for="curl-peso-der">Peso Der (kg)</label>
-              <input type="number" id="curl-peso-der" step="0.5" placeholder="0.0">
-            </div>
-            <div class="form-group">
-              <label for="curl-reps-der">Repeticiones Der</label>
-              <input type="number" id="curl-reps-der" step="1" placeholder="0">
-            </div>
-          </div>
-          <button type="submit" class="btn btn-success">Agregar Registro</button>
-        </form>
+        </div>
 
-        <table id="table-curl">
-          <thead>
-            <tr>
-              <th>Lado</th>
-              <th>Peso (kg)</th>
-              <th>Reps</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-curl">
-            <!-- Se renderiza dinámicamente -->
-          </tbody>
-        </table>
+        <div>
+          <h3>Cardio</h3>
+          <div class="table-responsive">
+            <table id="table-cardio">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Máquina</th>
+                  <th>Duración</th>
+                  <th>Inclinación</th>
+                  <th>Velocidad</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-cardio"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -182,7 +131,7 @@
 
   <!-- FOOTER -->
   <footer>
-    <p>ENTRENAMIENTO | Registro de Sobrecarga Progresiva</p>
+    <p>ENTRENAMIENTO | Registro de Fuerza y Cardio</p>
   </footer>
 
   <!-- Scripts -->

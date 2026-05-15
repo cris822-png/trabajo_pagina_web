@@ -1,9 +1,9 @@
 /* ============================================
-   NUTRICIÓN - Lógica de validación
+   NUTRICIÓN - Lógica de registro
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  nutricionPage = new NutricionPage();
+  window.nutricionPage = new NutricionPage();
   nutricionPage.init();
 });
 
@@ -15,229 +15,147 @@ class NutricionPage {
 
   init() {
     this.setupForm();
+    this.setupMixToggle();
     this.render();
   }
 
   setupForm() {
-    const form = document.getElementById('form-nutricion');
+    const form = document.getElementById('form-ingesta');
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      this.guardarNutricion();
+      this.agregarIngesta();
     });
   }
 
-  /**
-   * Valida todas las comidas en tiempo real
-   */
-  validarComida() {
-    const datos = this.extraerDatos();
-    const esValido = this.validarDatos(datos);
-    
-    const alertEl = document.getElementById('alert-nutricion');
-    if (!esValido.valido) {
-      alertEl.classList.remove('hidden');
-    } else {
-      alertEl.classList.add('hidden');
-    }
-
-    this.actualizarEstadoDia(esValido);
+  setupMixToggle() {
+    const mezclaToggle = document.getElementById('ingesta-mezcla');
+    const mezclaGroup = document.getElementById('mezcla-group');
+    mezclaToggle.addEventListener('change', () => {
+      mezclaGroup.classList.toggle('hidden', !mezclaToggle.checked);
+    });
   }
 
-  /**
-   * Extrae datos de los inputs
-   */
-  extraerDatos() {
+  obtenerNutricion() {
+    const nutricion = this.storage.getNutricion(this.hoy) || {};
+    nutricion.entries = nutricion.entries || [];
+    return nutricion;
+  }
+
+  guardarNutricion(nutricion) {
+    this.storage.setNutricion(this.hoy, nutricion);
+  }
+
+  extraerRegistro() {
     return {
-      '06_00_platano': {
-        completado: document.getElementById('platano-check').checked,
-        cantidad: parseInt(document.getElementById('platano-cantidad').value) || 0
-      },
-      'intra_clase': {
-        completado: document.getElementById('intra-check').checked,
-        leche: parseFloat(document.getElementById('intra-leche').value) || 0,
-        protein: parseInt(document.getElementById('intra-protein').value) || 0,
-        creatina: document.getElementById('intra-creatina').checked
-      },
-      '11_00_bocadillo': {
-        completado: document.getElementById('bocadillo-check').checked,
-        pan: parseInt(document.getElementById('bocadillo-pan').value) || 0,
-        lomo: parseInt(document.getElementById('bocadillo-lomo').value) || 0,
-        queso: parseInt(document.getElementById('bocadillo-queso').value) || 0
-      },
-      '14_30_comida': {
-        completado: document.getElementById('comida-principal-check').checked
-      },
-      '20_30_cena': {
-        completado: document.getElementById('cena-check').checked,
-        huevos: parseInt(document.getElementById('cena-huevos').value) || 0,
-        ensalada: document.getElementById('cena-ensalada').checked
-      }
+      hora: document.getElementById('ingesta-hora').value,
+      nombre: document.getElementById('ingesta-nombre').value.trim(),
+      unidad: document.getElementById('ingesta-unidad').value,
+      cantidad: parseFloat(document.getElementById('ingesta-cantidad').value),
+      mezcla: document.getElementById('ingesta-mezcla').checked,
+      ingredientes: document.getElementById('ingesta-ingredientes').value.trim(),
     };
   }
 
-  /**
-   * Valida exactitud de los datos
-   */
-  validarDatos(datos) {
+  validarRegistro(registro) {
     const errores = [];
-
-    // Validar Plátano
-    if (datos['06_00_platano'].completado) {
-      if (datos['06_00_platano'].cantidad !== 1) {
-        errores.push('Plátano: debe ser 1 unidad');
-      }
-    }
-
-    // Validar Intra-clase
-    if (datos['intra_clase'].completado) {
-      if (datos['intra_clase'].leche !== 0.5) {
-        errores.push('Intra-clase: leche debe ser 0.5L');
-      }
-      if (datos['intra_clase'].protein !== 1) {
-        errores.push('Intra-clase: proteína debe ser 1 scoop');
-      }
-      if (!datos['intra_clase'].creatina) {
-        errores.push('Intra-clase: creatina es obligatoria');
-      }
-    }
-
-    // Validar Bocadillo
-    if (datos['11_00_bocadillo'].completado) {
-      if (datos['11_00_bocadillo'].pan !== 2) {
-        errores.push('Bocadillo: pan debe ser 2 rodajas');
-      }
-      if (datos['11_00_bocadillo'].lomo !== 7) {
-        errores.push('Bocadillo: lomo debe ser 7 lonchas');
-      }
-      if (datos['11_00_bocadillo'].queso !== 1) {
-        errores.push('Bocadillo: queso debe ser 1 loncha');
-      }
-    }
-
-    // Validar Comida Principal (solo verificar que esté marcada)
-    // No hay especificación exacta de cantidad
-
-    // Validar Cena
-    if (datos['20_30_cena'].completado) {
-      if (datos['20_30_cena'].huevos !== 3) {
-        errores.push('Cena: huevos deben ser 3');
-      }
-      if (!datos['20_30_cena'].ensalada) {
-        errores.push('Cena: ensalada es obligatoria');
-      }
-    }
-
-    return {
-      valido: errores.length === 0,
-      errores
-    };
+    if (!registro.hora) errores.push('Hora es obligatoria.');
+    if (!registro.nombre) errores.push('Nombre del alimento es obligatorio.');
+    if (!registro.unidad) errores.push('Selecciona una unidad.');
+    if (!registro.cantidad || registro.cantidad <= 0) errores.push('Cantidad debe ser mayor que cero.');
+    if (registro.mezcla && !registro.ingredientes) errores.push('Agrega los ingredientes del batido.');
+    return errores;
   }
 
-  /**
-   * Actualiza visual del estado del día
-   */
-  actualizarEstadoDia(validacion) {
-    const statusEl = document.getElementById('day-status');
-    const todosMarcados = [
-      document.getElementById('platano-check'),
-      document.getElementById('intra-check'),
-      document.getElementById('bocadillo-check'),
-      document.getElementById('comida-principal-check'),
-      document.getElementById('cena-check')
-    ].every(el => el.checked);
+  agregarIngesta() {
+    const registro = this.extraerRegistro();
+    const errores = this.validarRegistro(registro);
+    const alertEl = document.getElementById('alert-ingesta');
 
-    if (validacion.valido && todosMarcados) {
-      statusEl.classList.remove('alert-danger');
-      statusEl.classList.add('alert-success');
-      statusEl.innerHTML = `<span style="color: var(--success); font-weight: 700;">✓ Estado: CUMPLIDO</span>`;
-    } else {
-      statusEl.classList.remove('alert-success');
-      statusEl.classList.add('alert-danger');
-      statusEl.innerHTML = `<span style="color: var(--danger); font-weight: 700;">✗ Estado: FALLADO</span>`;
+    if (errores.length) {
+      alertEl.textContent = `⚠️ ${errores[0]}`;
+      alertEl.classList.remove('hidden');
+      this.renderStatus(false);
+      return;
     }
-  }
 
-  /**
-   * Guarda nutrición del día
-   */
-  guardarNutricion() {
-    const datos = this.extraerDatos();
-    const validacion = this.validarDatos(datos);
+    alertEl.classList.add('hidden');
 
-    const nutricionData = {
-      '06_00_platano': datos['06_00_platano'].completado,
-      'intra_clase': datos['intra_clase'].completado,
-      '11_00_bocadillo': datos['11_00_bocadillo'].completado,
-      '14_30_comida': datos['14_30_comida'].completado,
-      '20_30_cena': datos['20_30_cena'].completado,
-      'dia_fallado': !validacion.valido || ![
-        datos['06_00_platano'].completado,
-        datos['intra_clase'].completado,
-        datos['11_00_bocadillo'].completado,
-        datos['14_30_comida'].completado,
-        datos['20_30_cena'].completado
-      ].every(x => x),
-      'detalles': datos,
-      'timestamp': new Date().toISOString()
+    const nutricion = this.obtenerNutricion();
+    const nuevoRegistro = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      ...registro,
+      timestamp: new Date().toISOString(),
     };
+    nutricion.entries.unshift(nuevoRegistro);
+    this.guardarNutricion(nutricion);
 
-    this.storage.setNutricion(this.hoy, nutricionData);
-    alert('Nutrición guardada');
+    document.getElementById('form-ingesta').reset();
+    document.getElementById('mezcla-group').classList.add('hidden');
     this.render();
   }
 
-  /**
-   * Renderiza la página
-   */
-  render() {
-    this.renderHistorico();
+  eliminarIngesta(id) {
+    const nutricion = this.obtenerNutricion();
+    nutricion.entries = nutricion.entries.filter((entry) => entry.id !== id);
+    this.guardarNutricion(nutricion);
+    this.render();
   }
 
-  /**
-   * Renderiza histórico de 7 últimos días
-   */
-  renderHistorico() {
-    const tbody = document.getElementById('tbody-historico');
-    tbody.innerHTML = '';
+  render() {
+    const nutricion = this.obtenerNutricion();
+    const valido = this.esDiaValido(nutricion.entries);
+    this.renderStatus(valido);
+    this.renderTabla(nutricion.entries);
+  }
 
-    const hoy = new Date();
-    for (let i = 6; i >= 0; i--) {
-      const fecha = new Date(hoy);
-      fecha.setDate(fecha.getDate() - i);
-      const fechaISO = fecha.toISOString().split('T')[0];
-      
-      const nutricion = this.storage.getNutricion(fechaISO);
-      
-      const row = document.createElement('tr');
-      
-      if (nutricion) {
-        const estadoClass = nutricion.dia_fallado ? 'text-danger' : 'text-success';
-        const estadoText = nutricion.dia_fallado ? 'FALLADO' : 'CUMPLIDO';
-        
-        let detalles = [];
-        if (nutricion['06_00_platano']) detalles.push('Plátano');
-        if (nutricion['intra_clase']) detalles.push('Intra');
-        if (nutricion['11_00_bocadillo']) detalles.push('Bocadillo');
-        if (nutricion['14_30_comida']) detalles.push('Comida');
-        if (nutricion['20_30_cena']) detalles.push('Cena');
-        
-        row.innerHTML = `
-          <td>${Utils.formatFecha(fechaISO)}</td>
-          <td><span class="${estadoClass}">${estadoText}</span></td>
-          <td>${detalles.join(', ') || 'N/A'}</td>
-        `;
-      } else {
-        row.innerHTML = `
-          <td>${Utils.formatFecha(fechaISO)}</td>
-          <td><span class="text-muted">SIN REGISTRO</span></td>
-          <td>-</td>
-        `;
-      }
-      
-      tbody.appendChild(row);
+  esDiaValido(entries) {
+    if (!entries.length) return false;
+    return entries.every((registro) => {
+      const errores = this.validarRegistro(registro);
+      return errores.length === 0;
+    });
+  }
+
+  renderStatus(valido) {
+    const statusEl = document.getElementById('status-dia');
+    if (!statusEl) return;
+    if (valido) {
+      statusEl.innerHTML = '<strong>Estado:</strong> <span class="text-success">CUMPLIDO</span> — Todas las ingestas registradas cumplen los requisitos.';
+      statusEl.classList.remove('alert-danger');
+      statusEl.classList.add('alert-success');
+    } else {
+      statusEl.innerHTML = '<strong>Estado:</strong> <span class="text-danger">FALLADO</span> — Faltan ingestas o hay datos incompletos.';
+      statusEl.classList.remove('alert-success');
+      statusEl.classList.add('alert-danger');
     }
   }
-}
 
-// Variable global
-let nutricionPage;
+  renderTabla(entries) {
+    const tbody = document.getElementById('tbody-ingesta');
+    tbody.innerHTML = '';
+    if (!entries.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Sin registros de nutrición para hoy.</td></tr>';
+      return;
+    }
+
+    entries.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+    entries.forEach((registro) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${registro.hora}</td>
+        <td>${Utils.escapeHTML(registro.nombre)}</td>
+        <td>${Utils.formatNumber(registro.cantidad, 1)} ${registro.unidad}</td>
+        <td>${registro.mezcla ? 'Sí' : 'No'}</td>
+        <td>${registro.mezcla ? Utils.escapeHTML(registro.ingredientes) : '-'}</td>
+        <td><button class="btn btn-danger btn-small" data-action="delete" data-id="${registro.id}">Eliminar</button></td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    tbody.querySelectorAll('button[data-action="delete"]').forEach((button) => {
+      button.addEventListener('click', () => {
+        this.eliminarIngesta(button.dataset.id);
+      });
+    });
+  }
+}

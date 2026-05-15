@@ -19,227 +19,86 @@
   <!-- MAIN -->
   <main>
 
-    <!-- ESTADO DEL DÍA -->
     <section class="mb-xl">
-      <div id="day-status" class="alert alert-danger">
-        Estado: FALLADO (Comidas pendientes)
-      </div>
-    </section>
+      <h2>Registro Diario de Nutrición</h2>
+      <p class="text-muted">Registra cada ingesta, unidad y cantidad. Si es un batido o mezcla, agrega sus ingredientes.</p>
 
-    <!-- FORMULARIO DE COMIDAS -->
-    <section class="mb-xl">
-      <h2>Registro de Comidas Diarias</h2>
-      <p class="text-muted">
-        Todas las comidas son obligatorias. Debes ingresar las cantidades EXACTAS. 
-        Cualquier desviación marca el día como FALLADO.
-      </p>
-
-      <form id="form-nutricion" class="card" style="padding: var(--spacing-xl);">
-
-        <!-- COMIDA 1: 06:00 PLÁTANO -->
-        <div class="form-group">
-          <label style="display: flex; align-items: center; gap: var(--spacing-md);">
-            <input type="checkbox" id="platano-check" onchange="nutricionPage.validarComida()">
-            <span style="font-weight: 700;">06:00 - PLÁTANO</span>
-          </label>
-          <div style="margin-left: 2rem; margin-top: var(--spacing-sm);">
-            <label for="platano-cantidad">Cantidad (unidades)</label>
-            <input 
-              type="number" 
-              id="platano-cantidad" 
-              min="1" 
-              max="1" 
-              step="1"
-              placeholder="1"
-              onchange="nutricionPage.validarComida()"
-            >
-            <div class="text-muted" style="font-size: 0.875rem; margin-top: var(--spacing-sm);">
-              Especificación: 1 plátano
-            </div>
+      <form id="form-ingesta" class="card card-section">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ingesta-hora">Hora</label>
+            <input type="time" id="ingesta-hora" required>
+          </div>
+          <div class="form-group">
+            <label for="ingesta-nombre">Nombre del alimento</label>
+            <input type="text" id="ingesta-nombre" placeholder="Ej: Batido proteico" required>
           </div>
         </div>
 
-        <!-- COMIDA 2: INTRA-CLASE (08:15-14:15) -->
-        <div class="form-group mt-lg">
-          <label style="display: flex; align-items: center; gap: var(--spacing-md);">
-            <input type="checkbox" id="intra-check" onchange="nutricionPage.validarComida()">
-            <span style="font-weight: 700;">INTRA-CLASE (08:15-14:15) - BATIDO</span>
-          </label>
-          <div style="margin-left: 2rem; margin-top: var(--spacing-sm);">
-            <div class="input-group">
-              <div class="form-group">
-                <label for="intra-leche">Leche (litros)</label>
-                <input 
-                  type="number" 
-                  id="intra-leche" 
-                  min="0.5" 
-                  max="0.5" 
-                  step="0.1"
-                  placeholder="0.5"
-                  onchange="nutricionPage.validarComida()"
-                >
-              </div>
-              <div class="form-group">
-                <label for="intra-protein">Proteína (scoops)</label>
-                <input 
-                  type="number" 
-                  id="intra-protein" 
-                  min="1" 
-                  max="1" 
-                  step="1"
-                  placeholder="1"
-                  onchange="nutricionPage.validarComida()"
-                >
-              </div>
-              <div class="form-group">
-                <label for="intra-creatina">Creatina</label>
-                <input 
-                  type="checkbox" 
-                  id="intra-creatina"
-                  onchange="nutricionPage.validarComida()"
-                >
-              </div>
-            </div>
-            <div class="text-muted" style="font-size: 0.875rem; margin-top: var(--spacing-sm);">
-              Especificación: 0.5L leche + 1 scoop proteína + creatina
-            </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ingesta-unidad">Unidad</label>
+            <select id="ingesta-unidad" required>
+              <option value="gramos">Gramos</option>
+              <option value="litros">Litros</option>
+              <option value="unidades">Unidades</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="ingesta-cantidad">Cantidad</label>
+            <input type="number" id="ingesta-cantidad" step="0.1" min="0.1" placeholder="0.0" required>
           </div>
         </div>
 
-        <!-- COMIDA 3: 11:00 (RECREO) - BOCADILLO -->
-        <div class="form-group mt-lg">
-          <label style="display: flex; align-items: center; gap: var(--spacing-md);">
-            <input type="checkbox" id="bocadillo-check" onchange="nutricionPage.validarComida()">
-            <span style="font-weight: 700;">11:00 (RECREO) - BOCADILLO</span>
-          </label>
-          <div style="margin-left: 2rem; margin-top: var(--spacing-sm);">
-            <div class="input-group">
-              <div class="form-group">
-                <label for="bocadillo-pan">Pan (rodajas 35% avena)</label>
-                <input 
-                  type="number" 
-                  id="bocadillo-pan" 
-                  min="2" 
-                  max="2" 
-                  step="1"
-                  placeholder="2"
-                  onchange="nutricionPage.validarComida()"
-                >
-              </div>
-              <div class="form-group">
-                <label for="bocadillo-lomo">Lomo (lonchas)</label>
-                <input 
-                  type="number" 
-                  id="bocadillo-lomo" 
-                  min="7" 
-                  max="7" 
-                  step="1"
-                  placeholder="7"
-                  onchange="nutricionPage.validarComida()"
-                >
-              </div>
-              <div class="form-group">
-                <label for="bocadillo-queso">Queso (lonchas)</label>
-                <input 
-                  type="number" 
-                  id="bocadillo-queso" 
-                  min="1" 
-                  max="1" 
-                  step="1"
-                  placeholder="1"
-                  onchange="nutricionPage.validarComida()"
-                >
-              </div>
-            </div>
-            <div class="text-muted" style="font-size: 0.875rem; margin-top: var(--spacing-sm);">
-              Especificación: 2 rodajas pan + 7 lonchas lomo + 1 queso
-            </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-inline"><input type="checkbox" id="ingesta-mezcla"> Es mezcla / batido</label>
           </div>
         </div>
 
-        <!-- COMIDA 4: 14:30 - COMIDA PRINCIPAL -->
-        <div class="form-group mt-lg">
-          <label style="display: flex; align-items: center; gap: var(--spacing-md);">
-            <input type="checkbox" id="comida-principal-check" onchange="nutricionPage.validarComida()">
-            <span style="font-weight: 700;">14:30-15:00 - COMIDA PRINCIPAL</span>
-          </label>
-          <div style="margin-left: 2rem; margin-top: var(--spacing-sm);">
-            <label for="comida-desc">Descripción (opcional)</label>
-            <textarea 
-              id="comida-desc" 
-              placeholder="Describe qué comiste (ej: arroz, pollo, verduras)"
-            ></textarea>
-            <div class="text-muted" style="font-size: 0.875rem; margin-top: var(--spacing-sm);">
-              Especificación: Completa (sin sustituciones)
-            </div>
-          </div>
+        <div class="form-group hidden" id="mezcla-group">
+          <label for="ingesta-ingredientes">Ingredientes del batido</label>
+          <textarea id="ingesta-ingredientes" placeholder="Ej: 0.5L leche, 1 scoop proteína, 1 banana"></textarea>
         </div>
 
-        <!-- COMIDA 5: 20:30 - CENA -->
-        <div class="form-group mt-lg">
-          <label style="display: flex; align-items: center; gap: var(--spacing-md);">
-            <input type="checkbox" id="cena-check" onchange="nutricionPage.validarComida()">
-            <span style="font-weight: 700;">20:30 - CENA</span>
-          </label>
-          <div style="margin-left: 2rem; margin-top: var(--spacing-sm);">
-            <div class="input-group">
-              <div class="form-group">
-                <label for="cena-huevos">Huevos (unidades)</label>
-                <input 
-                  type="number" 
-                  id="cena-huevos" 
-                  min="3" 
-                  max="3" 
-                  step="1"
-                  placeholder="3"
-                  onchange="nutricionPage.validarComida()"
-                >
-              </div>
-              <div class="form-group">
-                <label for="cena-ensalada">Ensalada (tomate + cebolla)</label>
-                <input 
-                  type="checkbox" 
-                  id="cena-ensalada"
-                  onchange="nutricionPage.validarComida()"
-                >
-              </div>
-            </div>
-            <div class="text-muted" style="font-size: 0.875rem; margin-top: var(--spacing-sm);">
-              Especificación: 3 huevos en tortilla + ensalada tomate y cebolla
-            </div>
-          </div>
+        <div id="alert-ingesta" class="alert alert-danger hidden">
+          ⚠️ El campo de ingredientes es obligatorio si la ingesta es una mezcla o batido.
         </div>
 
-        <div id="alert-nutricion" class="alert alert-danger hidden mt-lg">
-          ⚠️ DESVIACIÓN DETECTADA: El día será marcado como FALLADO.
-        </div>
-
-        <button type="submit" class="btn btn-success mt-lg">Guardar Nutrición del Día</button>
+        <button type="submit" class="btn btn-success">Agregar ingesta</button>
       </form>
     </section>
 
-    <!-- HISTÓRICO DE DÍAS -->
     <section class="mb-xl">
-      <h2>Histórico</h2>
-      <table id="table-historico">
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Estado</th>
-            <th>Detalles</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-historico">
-          <!-- Se renderiza dinámicamente -->
-        </tbody>
-      </table>
+      <div id="status-dia" class="status-message"></div>
+    </section>
+
+    <section class="mb-xl">
+      <h2>Tabla diaria</h2>
+      <div class="card card-section">
+        <div class="table-responsive">
+          <table id="table-ingesta">
+            <thead>
+              <tr>
+                <th>Hora</th>
+                <th>Alimento</th>
+                <th>Cantidad</th>
+                <th>Mezcla</th>
+                <th>Ingredientes</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-ingesta"></tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
   </main>
 
   <!-- FOOTER -->
   <footer>
-    <p>NUTRICIÓN | 5 Comidas Obligatorias</p>
+    <p>NUTRICIÓN | Registro diario con validación de mezclas</p>
   </footer>
 
   <!-- Scripts -->

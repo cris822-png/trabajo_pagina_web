@@ -22,8 +22,6 @@ class StorageManager {
     if (!this.exists()) {
       const initialData = {
         user_profile: {
-          peso_inicial: 96.0,
-          objetivo_grasa: 12,
           fecha_inicio: this.getTodayISO(),
         },
         entrenamiento: {},
@@ -417,9 +415,21 @@ class Utils {
    * Formatea fecha ISO a formato legible
    */
   static formatFecha(fechaISO) {
-    const fecha = new Date(fechaISO + 'T00:00:00');
+    const fecha = new Date(fechaISO.includes('T') ? fechaISO : fechaISO + 'T00:00:00');
     const opciones = { weekday: 'short', month: 'short', day: 'numeric' };
     return fecha.toLocaleDateString('es-ES', opciones);
+  }
+
+  /**
+   * Escapa texto para evitar inyección en tablas
+   */
+  static escapeHTML(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   /**
