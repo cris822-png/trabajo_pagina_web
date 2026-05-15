@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DISCIPLINA AUDIT | Autenticación</title>
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 id="auth-title">Iniciar Sesión</h1>
+        <p class="auth-subtitle">Ingresa tus credenciales para continuar en DISCIPLINA AUDIT.</p>
+      </div>
+
+      <div class="auth-toggle">
+        <button type="button" id="btn-login" class="toggle-button active">Iniciar Sesión</button>
+        <button type="button" id="btn-register" class="toggle-button">Crear Cuenta</button>
+      </div>
+
+      <form id="auth-form" class="auth-form">
+        <div class="form-group" id="group-usuario">
+          <label for="usuario">Usuario</label>
+          <input type="text" id="usuario" autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="correo">Correo electrónico</label>
+          <input type="email" id="correo" autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label for="contrasena">Contraseña</label>
+          <input type="password" id="contrasena" autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn-submit" id="submit-button">Entrar</button>
+      </form>
+
+      <p id="auth-error" class="auth-error"></p>
+    </div>
+  </div>
+
+<script src="../js/auth.js"></script>
+</body>
+</html>
