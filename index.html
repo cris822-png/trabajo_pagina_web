@@ -5,16 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DISCIPLINA AUDIT | Dashboard</title>
     <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/index.css">
 </head>
 <body class="page-dashboard">
 
-<!-- HEADER CON RELOJ -->
 <header>
-    <nav class="flex-between">
-        <h1>DISCIPLINA AUDIT</h1>
-        <div class="flex-center">
-        <span class="clock-label">Hora:</span>
-        <span class="clock" id="clock">00:00:00</span>
+    <nav class="header-top">
+        <div class="header-title">
+            <h1>DISCIPLINA AUDIT</h1>
+        </div>
+
+        <div class="clock-center">
+            <span class="clock-label">Hora:</span>
+            <span class="clock" id="clock">00:00:00</span>
+        </div>
+
+        <div class="user-menu">
+            <div class="user-icon"></div>
+            <a href="src/pages/auth.html" id="user-action-btn" class="user-button">INICIAR SESIÓN</a>
         </div>
     </nav>
 </header>
@@ -107,6 +115,30 @@
 <!-- Scripts -->
 <script src="src/js/main.js"></script>
 <script src="src/js/dashboard.js"></script>
+<script>
+  function updateUserActionButton() {
+    const button = document.getElementById('user-action-btn');
+    if (!button) return;
+
+    const stored = sessionStorage.getItem('usuario_activo');
+    let label = 'INICIAR SESIÓN';
+
+    if (stored) {
+      try {
+        const user = JSON.parse(stored);
+        if (user && user.usuario) {
+          label = user.usuario;
+        }
+      } catch (error) {
+        label = 'INICIAR SESIÓN';
+      }
+    }
+
+    button.textContent = label;
+  }
+
+  document.addEventListener('DOMContentLoaded', updateUserActionButton);
+</script>
 
 </body>
 </html>
