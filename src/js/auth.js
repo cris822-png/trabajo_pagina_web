@@ -95,7 +95,7 @@ function handleLogin(correo, contrasena) {
   }
 
   sessionStorage.setItem('usuario_activo', JSON.stringify({ correo: usuarioEncontrado.correo, usuario: usuarioEncontrado.usuario }));
-  window.location.href = 'index.html';
+  window.location.href = '../../index.html';
 }
 
 function handleRegister(usuario, correo, contrasena) {
